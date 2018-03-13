@@ -2,6 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
+using System.Linq;
+using System.Reflection;
 using BarkBooking.Identity.IdentityServer.Data;
 using BarkBooking.Identity.IdentityServer.Models;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -12,26 +15,23 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
-using System.Reflection;
 
 namespace BarkBooking.Identity.IdentityServer
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        {
+            Environment = environment;
+            Configuration = configuration;
+        }
+
         public IConfiguration Configuration { get; }
         public IHostingEnvironment Environment { get; }
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
-        {
-            Configuration = configuration;
-            Environment = environment;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("IdentityServer");
+            var connectionString = Configuration["ConnectionStrings:IdentityServer"];
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -43,20 +43,20 @@ namespace BarkBooking.Identity.IdentityServer
             services.AddMvc();
 
             services.Configure<IISOptions>(iis =>
-                {
-                    iis.AuthenticationDisplayName = "Windows";
-                    iis.AutomaticAuthentication = false;
-                });
+            {
+                iis.AuthenticationDisplayName = "Windows";
+                iis.AutomaticAuthentication = false;
+            });
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             var builder = services.AddIdentityServer(options =>
-            {
-                options.Events.RaiseErrorEvents = true;
-                options.Events.RaiseInformationEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseSuccessEvents = true;
-            })
+                {
+                    options.Events.RaiseErrorEvents = true;
+                    options.Events.RaiseInformationEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseSuccessEvents = true;
+                })
                 // this adds the config data from DB (clients, resources)
                 .AddConfigurationStore(options =>
                 {
@@ -78,27 +78,13 @@ namespace BarkBooking.Identity.IdentityServer
                 .AddAspNetIdentity<ApplicationUser>();
 
             if (Environment.IsDevelopment())
-            {
                 builder.AddDeveloperSigningCredential();
-            }
             else
-            {
                 throw new Exception("need to configure key material");
-            }
-
-            services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    options.ClientId = "708996912208-9m4dkjb5hscn7cjrn5u0r4tbgkbj1fko.apps.googleusercontent.com";
-                    options.ClientSecret = "wdfPY6t8H8cecgjlxud__4Gh";
-                });
         }
 
         public void Configure(IApplicationBuilder app)
         {
-            InitializeDatabase(app);
-
-
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -114,41 +100,33 @@ namespace BarkBooking.Identity.IdentityServer
             app.UseMvcWithDefaultRoute();
         }
 
-        private void InitializeDatabase(IApplicationBuilder app)
-        {
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+        //private void InitializeDatabase(IApplicationBuilder app)
+        //{
+        //    using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+        //    {
+        //        serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
-                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                context.Database.Migrate();
-                if (!context.Clients.Any())
-                {
-                    foreach (var client in Config.GetClients())
-                    {
-                        context.Clients.Add(client.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
+        //        var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+        //        context.Database.Migrate();
+        //        if (!context.Clients.Any())
+        //        {
+        //            foreach (var client in Config.GetClients()) context.Clients.Add(client.ToEntity());
+        //            context.SaveChanges();
+        //        }
 
-                if (!context.IdentityResources.Any())
-                {
-                    foreach (var resource in Config.GetIdentityResources())
-                    {
-                        context.IdentityResources.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
+        //        if (!context.IdentityResources.Any())
+        //        {
+        //            foreach (var resource in Config.GetIdentityResources())
+        //                context.IdentityResources.Add(resource.ToEntity());
+        //            context.SaveChanges();
+        //        }
 
-                if (!context.ApiResources.Any())
-                {
-                    foreach (var resource in Config.GetApiResources())
-                    {
-                        context.ApiResources.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-            }
-        }
+        //        if (!context.ApiResources.Any())
+        //        {
+        //            foreach (var resource in Config.GetApiResources()) context.ApiResources.Add(resource.ToEntity());
+        //            context.SaveChanges();
+        //        }
+        //    }
+        //}
     }
 }

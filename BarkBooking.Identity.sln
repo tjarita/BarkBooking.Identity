@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarkBooking.Identity.IdentityServer", "BarkBooking.Identity.IdentityServer\BarkBooking.Identity.IdentityServer.csproj", "{8CD30BCE-63D3-4397-87ED-6CE7705FABA7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarkBooking.Identity.IdentityServer.TestClient", "BarkBooking.Identity.IdentityServer.TestClient\BarkBooking.Identity.IdentityServer.TestClient.csproj", "{DAD5027D-FA65-48B2-87B6-3761E523DC38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarkBooking.Identity.IdentityServer.TestApi", "BarkBooking.Identity.IdentityServer.TestApi\BarkBooking.Identity.IdentityServer.TestApi.csproj", "{E74DEF5C-4BD4-4BF0-8E78-D4DA9D4A4CFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{8CD30BCE-63D3-4397-87ED-6CE7705FABA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CD30BCE-63D3-4397-87ED-6CE7705FABA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CD30BCE-63D3-4397-87ED-6CE7705FABA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAD5027D-FA65-48B2-87B6-3761E523DC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAD5027D-FA65-48B2-87B6-3761E523DC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAD5027D-FA65-48B2-87B6-3761E523DC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAD5027D-FA65-48B2-87B6-3761E523DC38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E74DEF5C-4BD4-4BF0-8E78-D4DA9D4A4CFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E74DEF5C-4BD4-4BF0-8E78-D4DA9D4A4CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E74DEF5C-4BD4-4BF0-8E78-D4DA9D4A4CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E74DEF5C-4BD4-4BF0-8E78-D4DA9D4A4CFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
