@@ -45,7 +45,9 @@ namespace BarkBooking.Identity.IdentityServer
                     var env = hostingContext.HostingEnvironment;
 
                     config.AddJsonFile("appsettings.json", true, true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true);
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
+                        .AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "..\\appsettings.global.json"), true, true)
+                        ;
 
                     if (env.IsDevelopment())
                     {
