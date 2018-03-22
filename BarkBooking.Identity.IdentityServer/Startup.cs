@@ -3,15 +3,14 @@
 
 
 using System;
-using System.Linq;
 using System.Reflection;
 using BarkBooking.Identity.IdentityServer.Data;
 using BarkBooking.Identity.IdentityServer.Models;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +40,11 @@ namespace BarkBooking.Identity.IdentityServer
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+            services.Configure<MvcOptions>(options =>
+            {
+                if (Environment.IsStaging() || Environment.IsProduction())
+                    options.Filters.Add(new RequireHttpsAttribute());
+            });
 
             services.Configure<IISOptions>(iis =>
             {
@@ -98,6 +102,10 @@ namespace BarkBooking.Identity.IdentityServer
             app.UseStaticFiles();
             app.UseIdentityServer();
             app.UseMvcWithDefaultRoute();
+
+            var options = new RewriteOptions();
+            if (Environment.IsStaging() || Environment.IsProduction()) options.AddRedirectToHttps();
+            app.UseRewriter(options);
         }
 
         //private void InitializeDatabase(IApplicationBuilder app)
